@@ -1,0 +1,27 @@
+{
+    "name": "lorddashme/wp-db-schema-extender",
+    "description": "A WordPress Database extender that provided a nice structure of table migration and data seeds.",
+    "keywords": ["WordPress", "github", "wp", "wp-db", "schema", "extender"],
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/lorddashme/wp-db-schema-extender",
+    "authors": [
+        {
+            "name": "Joshua Clifford Reyes",
+            "email": "reyesjoshuaclifford@gmail.com",
+            "homepage": "https://lorddashme.github.io/"
+        }
+    ],
+    "require": {
+        "php": ">=5.6 || >=7.0 || >=7.1"
+    },
+    "require-dev": {
+        "mockery/mockery": "1.0.*",
+        "phpunit/phpunit": "5.* || 6.* || 7.*"
+    },
+    "autoload": {
+        "psr-4": { 
+            "LordDashMe\\WP\\": "src/" 
+        }
+    }
+}

@@ -25,7 +25,7 @@
         </whitelist>
     </filter>
     <testsuites>
-        <testsuite name="wp-db-schema-extender">
+        <testsuite name="wordpress-db-schema-extender">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

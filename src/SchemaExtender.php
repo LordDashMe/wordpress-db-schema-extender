@@ -11,9 +11,15 @@
 
 namespace LordDashMe\Wordpress\DB;
 
+/**
+ * @todo Pending Exception Classes.
+ */
 use LordDashMe\Wordpress\DB\Exception\InvalidDatabaseInstance;
+use LordDashMe\Wordpress\DB\Exception\WPDatabaseUpdateFunctionsNotFound;
 
 /**
+ * @todo Add Comments After The Remaning Tasks On The Development.
+ * 
  * Schema Extender Class.
  * 
  * A WordPress Database schema extender that provided 
@@ -23,11 +29,6 @@ use LordDashMe\Wordpress\DB\Exception\InvalidDatabaseInstance;
  */
 class SchemaExtender
 {
-    /**
-     * The database instance that will be using by the Schema Extender class.
-     * 
-     * @var mixed
-     */
     protected $db = null;
 
     protected $seeds = array();
@@ -39,26 +40,21 @@ class SchemaExtender
     protected $tablePrimaryKey = array();
 
     protected $tableTemporaryCacheName = '';
-
-    /**
-     * Holds the logic that's provided outside of the Schema Extender class.
-     * 
-     * @var mixed
-     */
-    protected $functionCallBack = null;
     
     /**
      * The initialization process of the schema extender lays here.
      * 
-     * @param  mixed  $functionCallBack    Holds the outside logic.
+     * @param  mixed  $functionInitCallBack    Holds the outside logic.
      * 
      * @return void
      */
-    public function init($functionCallBack = null)
+    public function init($functionInitCallBack = null)
     {
         $this->provideDatabase();
 
-        $this->functionCallBack = $functionCallBack;
+        if ($functionInitCallBack instanceof \Closure) {
+            $functionInitCallBack($this);
+        }
     }
 
     /**
@@ -70,7 +66,7 @@ class SchemaExtender
     {
         global $wpdb;
 
-        if ((! class_exists('wpdb')) || (! $wpdb) || (! $wpdb instanceof \wpdb)) {
+        if ((! \class_exists('wpdb')) || (! $wpdb) || (! $wpdb instanceof \wpdb)) {
             throw InvalidDatabaseInstance::wordpressDatabaseIsNotSet();
         }
 
@@ -79,26 +75,46 @@ class SchemaExtender
 
     public function table($name, $functionTableSchemaCallback)
     {   
+        /**
+         * @todo Provide Exception Here To Catch Non-Closure 2nd Args.
+         */
+
         $this->tableTemporaryCacheName = $name;
 
         $functionTableSchemaCallback($this);
+        
+        $tableName = $this->tableName($name);
+        $tableSchema = \substr(
+            $this->parseColumnsStringQuery($tableName) . $this->parsePrimaryKeyStringQuery($tableName), 0, -1
+        );
+        $tableCharacterSetCollate = $this->getCharacterSetCollate();
 
+        $this->queries[$this->getQueriesIndex()] = "
+            CREATE TABLE `{$tableName}` ({$tableSchema}) {$tableCharacterSetCollate};
+        ";
+    }
+
+    private function parseColumnsStringQuery($tableName)
+    {
         $columnsQuery = '';
-        foreach ($this->tableColumns[$name] as $columnName => $columnStatement) {
+
+        foreach ($this->tableColumns[$tableName] as $columnName => $columnStatement) {
             $columnsQuery .= "`{$columnName}` {$columnStatement},";
         }
 
+        return $columnsQuery;
+    }
+
+    private function parsePrimaryKeyStringQuery($tableName)
+    {
         $primaryKeyQuery = '';
-        if (isset($this->tablePrimaryKey[$name])) {
-            $primaryKey = $this->tablePrimaryKey[$name];
+        
+        if (isset($this->tablePrimaryKey[$tableName])) {
+            $primaryKey = $this->tablePrimaryKey[$tableName];
             $primaryKeyQuery .= "PRIMARY KEY (`{$primaryKey}`),";
         }
-        
-        $tableName = $this->tableName($name);
-        $tableSchema = substr($columnsQuery . $primaryKeyQuery, 0, -1);
-        $tableCharacterSetCollate = $this->getCharacterSetCollate();
 
-        $this->queries[$this->getQueriesIndex()] = "CREATE TABLE `{$tableName}` ({$tableSchema}) {$tableCharacterSetCollate};";
+        return $primaryKeyQuery;
     }
 
     public function column($name, $statement)
@@ -115,26 +131,26 @@ class SchemaExtender
 
     public function seed($table, $functionSeedColumnsCallback)
     {
+        /**
+         * @todo Provide Exception Here To Catch Non-Closure or Array Type of 2nd Args.
+         */
         $this->tableTemporaryCacheName = $this->getSeedsIndex();
 
         $this->seeds[$this->tableTemporaryCacheName]['table'] = $this->tableName($table);
 
-        if ($functionSeedColumnsCallback || is_array($functionSeedColumnsCallback)) {
-
-            if ($functionSeedColumnsCallback instanceof \Closure) {
-                $object = (object) [];
-                $functionSeedColumnsCallback = (array) $functionSeedColumnsCallback($object);  
-            }
-
-            $seedColumns = [];
-            foreach ($functionSeedColumnsCallback as $field => $value) {
-                $seedColumns[$field] = $value;
-            }
-
-            $this->seeds[$this->tableTemporaryCacheName]['record'] = $seedColumns;
-
-            return $this;
+        if ($functionSeedColumnsCallback instanceof \Closure) {
+            $object = (object) array();
+            $functionSeedColumnsCallback = (array) $functionSeedColumnsCallback($object);  
         }
+
+        $seedColumns = array();
+        foreach ($functionSeedColumnsCallback as $field => $value) {
+            $seedColumns[$field] = $value;
+        }
+
+        $this->seeds[$this->tableTemporaryCacheName]['record'] = $seedColumns;
+
+        return $this;
     }
 
     public function iterate($counter)
@@ -144,7 +160,7 @@ class SchemaExtender
 
     public function raw($queries = '')
     {
-        if (is_string($queries)) {
+        if (\is_string($queries)) {
             $this->queries[$this->getQueriesIndex()] = $queries;
         }
     }
@@ -170,13 +186,62 @@ class SchemaExtender
         return $this->{$type};
     }
 
-    protected function getQueriesIndex()
+    public function migrate()
     {
-        return count($this->queries);
+        $this->loadQueries();
+        $this->loadTableSeeds(); 
     }
 
-    protected function getSeedsIndex()
+    protected function loadQueries()
     {
-        return count($this->seeds);   
+        /**
+         * @todo Test Exception Here.
+         */
+        if (! \function_exists('dbDelta')) {
+            WPDatabaseUpdateFunctionsNotFound::dbDeltaIsNotExist();
+        }
+
+        dbDelta($this->processQueries());
+    }
+
+    private function processQueries()
+    {
+        $processedQueries = '';
+
+        foreach ($this->queries as $index => $query) {
+            $processedQueries .= \trim($query);
+        }
+
+        return $processedQueries;
+    }
+
+    protected function loadTableSeeds()
+    {
+        foreach ($this->seeds as $index => $query) {
+            
+            if (isset($query['iterate'])) {
+                $this->processSeedsIteration($query);  
+                continue;
+            }
+
+            $this->db->insert($query['table'], $query['record']);
+        }
+    }
+
+    private function processSeedsIteration($query)
+    {
+        for ($x = 0; $x <= $query['iterate']; $x++) {
+            $this->db->insert($query['table'], $query['record']);
+        }
+    }
+
+    private function getQueriesIndex()
+    {
+        return \count($this->queries);
+    }
+
+    private function getSeedsIndex()
+    {
+        return \count($this->seeds);   
     }
 }

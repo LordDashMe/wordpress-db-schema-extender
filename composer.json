@@ -1,6 +1,6 @@
 {
     "name": "lorddashme/wp-db-schema-extender",
-    "description": "A WordPress Database extender that provided a nice structure of table migration and data seeds.",
+    "description": "A WordPress Database schema extender that provided a nice structure of table migration and data seeds.",
     "keywords": ["WordPress", "github", "wp", "wp-db", "schema", "extender"],
     "type": "library",
     "license": "MIT",
@@ -13,7 +13,8 @@
         }
     ],
     "require": {
-        "php": ">=5.6 || >=7.0 || >=7.1"
+        "php": ">=5.6 || >=7.0 || >=7.1",
+        "lorddashme/php-static-class-interface": "1.*"
     },
     "require-dev": {
         "mockery/mockery": "1.0.*",
@@ -21,7 +22,7 @@
     },
     "autoload": {
         "psr-4": { 
-            "LordDashMe\\WP\\": "src/" 
+            "LordDashMe\\Wordpress\\DB\\": "src/" 
         }
     }
 }

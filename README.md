@@ -20,7 +20,7 @@ composer require lorddashme/wordpress-db-schema-extender
 
 - Available functions:
 
-| Function | Description |
+| Function &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Description |
 | -------- | ----------- |
 | ```$schemaExtender->table('tableName', closure);``` | Use to create table structure. |
 | ```$table->column('columnName', 'statement');``` | In the "table" function second argument closure you can use this function, this add the definition of you column. |

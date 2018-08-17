@@ -22,15 +22,15 @@ composer require lorddashme/wordpress-db-schema-extender
 
 | Function &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Description |
 | -------- | ----------- |
-| ```$schemaExtender->table('tableName', closure);``` | Use to create table structure. |
-| ```$table->column('columnName', 'statement');``` | In the "table" function second argument closure you can use this function, this add the definition of you column. |
-| ```$table->primaryKey('columnName');``` | Also the same with the "column" function you can use this function via "table" function  second argument closure, this add primary key to the table base on the given column name. |
-| ```$schemaExtender->tableSeed('tableName', closure|array);``` | Use to seed data to the given table name. |
-| ```$schemaExtender->tableName('tableName');``` | The return value of this function is concatenated with the wordpress prefix config. |
-| ```$schemaExtender->rawQuery('statement');``` | Of course not all of the sql query is wrapped to php code that's why this function is provided to still allow you to do anything you want. |
-| ```$schemaExtender->migrate();``` | Use to commit all the declared statement. |
-| ```$schemaExtender->dropTable('tableName');``` | Use to drop the specified table. |
-| ```$schemaExtender->dropTables(['tableName', ...]);``` | Use to drop tables in a single line of code. |
+| ```table('tableName', closure);``` | Use to create table structure. |
+| ```column('columnName', 'statement');``` | In the "table" function second argument closure you can use this function, this add the definition of you column. |
+| ```primaryKey('columnName');``` | Also the same with the "column" function you can use this function via "table" function  second argument closure, this add primary key to the table base on the given column name. |
+| ```tableSeed('tableName', closure|array);``` | Use to seed data to the given table name. |
+| ```tableName('tableName');``` | The return value of this function is concatenated with the wordpress prefix config. |
+| ```rawQuery('statement');``` | Of course not all of the sql query is wrapped to php code that's why this function is provided to still allow you to do anything you want. |
+| ```migrate();``` | Use to commit all the declared statement. |
+| ```dropTable('tableName');``` | Use to drop the specified table. |
+| ```dropTables(['tableName', ...]);``` | Use to drop tables in a single line of code. |
 
 - Below are the sample implementation:
 

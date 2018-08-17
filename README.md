@@ -22,7 +22,7 @@ composer require lorddashme/wordpress-db-schema-extender
 
 | Function | Description |
 | -------- | ----------- |
-|<img width=400/>|<img width=500/>|
+| <img width=600/>  |<img width=300/> |
 | table('tableName', closure); | Use to create table structure. |
 | column('columnName', 'statement'); | In the "table" function second argument closure you can use this function, this add the definition of you column. |
 | primaryKey('columnName'); | Also the same with the "column" function you can use this function via "table" function  second argument closure, this add primary key to the table base on the given column name. |

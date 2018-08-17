@@ -27,7 +27,7 @@ composer require lorddashme/wordpress-db-schema-extender
 | ```column('columnName', 'statement');``` | In the "table" function second argument the closure return an instance that allow you to use this function. This fucntion add the definition of your column that will be add to table. |
 | ```primaryKey('columnName');``` | Also same with the "column" function you can use this function via "table" function second argument closure. This function add primary key to the table base on the given column name. |
 | ```tableSeed('tableName', closure or array);``` | Use to seed data to the given table name. |
-| ```tableName('tableName');``` | The return value of this function is concatenated with the wordpress prefix config. |
+| ```tableName('tableName');``` | The return value of this function is concatenated with the wordpress table prefix setup in the config file. |
 | ```rawQuery('statement');``` | Of course not all of the sql query is wrapped to php code that's why this function is provided to still allow you to do anything you want. |
 | ```migrate();``` | Use to commit all the declared statement. |
 | ```dropTable('tableName');``` | Use to drop the specified table. |

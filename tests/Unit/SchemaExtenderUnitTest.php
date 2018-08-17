@@ -5,7 +5,6 @@ namespace LordDashMe\Wordpress\DB\Tests\Unit;
 use Mockery as Mockery;
 use PHPUnit\Framework\TestCase;
 use LordDashMe\Wordpress\DB\SchemaExtender;
-use LordDashMe\Wordpress\DB\Facade\SchemaExtender as SchemaExtenderFacade;
 
 class SchemaExtenderUnitTest extends TestCase
 {
@@ -23,9 +22,30 @@ class SchemaExtenderUnitTest extends TestCase
      * @expectedExceptionCode 100
      */
     public function it_should_throw_exception_when_wpdb_not_detected()
+    {   
+        global $wpdb;
+
+        $wpdb = null;
+
+        $extender = new SchemaExtender();
+        $extender->init();
+    }
+
+    /**
+     * @test
+     * @expectedException LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed
+     * @expectedExceptionCode 100
+     */
+    public function it_should_throw_exception_in_create_table_schema_when_second_args_not_closure()
     {
-        $schemaExtender = new SchemaExtender();
-        $schemaExtender->init();
+        $this->mockedWordpressDabaseInstanceGlobal();
+        
+        $extender = new SchemaExtender();
+        $extender->init(function($context) {
+
+            $context->table('users', null);
+
+        });
     }
 
     /**
@@ -33,251 +53,266 @@ class SchemaExtenderUnitTest extends TestCase
      */
     public function it_should_create_table_schema()
     {
-        global $wpdb;
+        $this->mockedWordpressDabaseInstanceGlobal();
 
-        $wpdb = Mockery::mock('wpdb');
-        $wpdb->prefix = 'wp_';
-        $wpdb->shouldReceive('get_charset_collate')
-             ->andReturn('UTF-8');
-
-        $schemaExtender = new SchemaExtender();
-        $schemaExtender->init();
-
-        $schemaExtender->table('users', function($table) {
-            $table->column('id', 'INT(11) NOT NULL AUTO_INCREMENT');
-            $table->column('name', 'TEXT NULL');
-            $table->primaryKey('id');
-        });
-
-        $queries = $schemaExtender->getQueries();
-
-        $this->assertEquals(105, strlen($queries[0]));
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_create_table_seeds_via_closure()
-    {
-        global $wpdb;
-
-        $wpdb = Mockery::mock('wpdb');
-        $wpdb->prefix = 'wp_';
-        $wpdb->shouldReceive('get_charset_collate')
-             ->andReturn('UTF-8');
-
-        $schemaExtender = new SchemaExtender();
-        $schemaExtender->init();
-
-        $schemaExtender->seed('users', function($column) {
-            $column->id = 1;
-            $column->name = 'John Doe';
-            return $column;
-        })->iterate(5);
-
-        $queries = $schemaExtender->getQueries('seeds');
-
-        $this->assertEquals(
-            array(
-                'id' => 1,
-                'name' => 'John Doe'
-            ),
-            $queries[0]['record']
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_create_table_seeds_via_array()
-    {
-        global $wpdb;
-
-        $wpdb = Mockery::mock('wpdb');
-        $wpdb->prefix = 'wp_';
-        $wpdb->shouldReceive('get_charset_collate')
-             ->andReturn('UTF-8');
-
-        $schemaExtender = new SchemaExtender();
-        $schemaExtender->init();
-
-        $schemaExtender->seed('users', [
-            'id' => 1, 'name' => 'John Doe'
-        ])->iterate(5);
-
-        $queries = $schemaExtender->getQueries('seeds');
-
-        $this->assertEquals(
-            array(
-                'id' => 1,
-                'name' => 'John Doe'
-            ),
-            $queries[0]['record']
-        );
-    }
-
-    /**
-     * @test 
-     */
-    public function it_should_accept_raw_queries()
-    {
-        global $wpdb;
-
-        $wpdb = Mockery::mock('wpdb');
-        $wpdb->prefix = 'wp_';
-        $wpdb->shouldReceive('get_charset_collate')
-             ->andReturn('UTF-8');   
-        
-        $schemaExtender = new SchemaExtender();
-        $schemaExtender->init();
-
-        $schemaExtender->table('users', function($table) {
-            $table->column('id', 'INT(11) NOT NULL AUTO_INCREMENT');
-            $table->column('name', 'TEXT NULL');
-            $table->primaryKey('id');
-        });
-
-        $schemaExtender->raw('
-            ALTER TABLE ' . $schemaExtender->tableName('users') . '
-                ADD KEY `user_id` (`user_id`);
-            ALTER TABLE ' . $schemaExtender->tableName('users') . ' 
-                ADD CONSTRAINT `user_options_constraint` 
-                FOREIGN KEY (`user_id`) 
-                REFERENCES ' . $schemaExtender->tableName('user_options') . ' (`id`) 
-                ON DELETE CASCADE 
-                ON UPDATE NO ACTION;
-        ');
-
-        $queries = $schemaExtender->getQueries();
-
-        $schemaExtender->migrate();
-
-        $this->assertEquals(345, strlen($queries[1]));
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_accept_closure_in_the_init()
-    {
-        global $wpdb;
-
-        $wpdb = Mockery::mock('wpdb');
-        $wpdb->prefix = 'wp_';
-        $wpdb->shouldReceive('get_charset_collate')
-             ->andReturn('UTF-8');   
-        
-        $schemaExtender = new SchemaExtender();
-        $schemaExtender->init(function($db) {
-
-            $db->table('users', function($table) {
+        $extender = new SchemaExtender();
+        $extender->init(function($context) {
+            
+            $context->table('users', function($table) {
                 $table->column('id', 'INT(11) NOT NULL AUTO_INCREMENT');
                 $table->column('name', 'TEXT NULL');
                 $table->primaryKey('id');
             });
 
-            $db->seed('users', [
-                'id' => 1, 'name' => 'John Doe'
-            ])->iterate(5);
-
         });
 
-        $queries = $schemaExtender->getQueries();
-        $seeds = $schemaExtender->getQueries('seeds');
+        $this->assertEquals(107, strlen($extender->getQueries()[0]));
+    }
 
-        $this->assertEquals(105, strlen($queries[0]));
-        $this->assertEquals(
-            array(
-                'id' => 1,
-                'name' => 'John Doe'
-            ),
-            $seeds[0]['record']
-        );
+    /**
+     * @test
+     * @expectedException LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed
+     * @expectedExceptionCode 101
+     */
+    public function it_should_throw_exception_in_table_seed_when_second_args_not_array_or_closure()
+    {
+        $this->mockedWordpressDabaseInstanceGlobal();
+
+        $extender = new SchemaExtender();
+        $extender->init(function($context) {
+
+            $context->tableSeed('users', null);
+
+        });
     }
 
     /**
      * @test
      */
-    public function it_should_load_schema_extender_in_a_static_way()
+    public function it_should_create_table_seed()
+    {
+        $this->mockedWordpressDabaseInstanceGlobal();
+
+        $extender = new SchemaExtender();
+        $extender->init(function($context) {
+
+            $context->tableSeed('users', function($data) {
+                $data->id = 1;
+                $data->name = 'John Doe';
+                return $data;
+            })->iterate(5);
+
+        });
+
+        $this->assertEquals(3, count($extender->getSeedQueries()[0]));
+    }
+
+    /**
+     * @test
+     * @expectedException LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed
+     * @expectedExceptionCode 102 
+     */
+    public function it_should_throw_exception_in_raw_query_when_given_args_not_string()
+    {
+        $this->mockedWordpressDabaseInstanceGlobal();
+
+        $extender = new SchemaExtender();
+        $extender->init(function($context) {
+
+            $context->rawQuery(null);
+
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_create_raw_query()
+    {
+        $this->mockedWordpressDabaseInstanceGlobal();
+
+        $extender = new SchemaExtender();
+        $extender->init(function($context) {
+
+            $context->rawQuery('
+                ALTER TABLE ' . $context->tableName('users') . '
+                    ADD KEY `user_id` (`user_id`);
+                ALTER TABLE ' . $context->tableName('users_options') . ' 
+                    ADD CONSTRAINT `foreign_constraint_users_option_users` 
+                    FOREIGN KEY (`user_id`) 
+                    REFERENCES ' . $context->tableName('users') . ' (`id`) 
+                    ON DELETE CASCADE 
+                    ON UPDATE NO ACTION;'
+            );
+
+        });
+
+        $this->assertEquals(366, strlen($extender->getQueries()[0]));
+    }
+
+    /**
+     * @test
+     * @expectedException LordDashMe\Wordpress\DB\Exception\WPDatabaseUpdateFunctionsNotFound
+     * @expectedExceptionCode 100 
+     */
+    public function it_should_throw_exception_in_migrate_when_wp_database_update_function_not_exists()
+    {
+        $this->mockedWordpressDabaseInstanceGlobal();
+
+        $extender = new SchemaExtender();
+        $extender->init(function($context) {
+            
+            $context->table('users', function($table) {
+                $table->column('id', 'INT(11) NOT NULL AUTO_INCREMENT');
+                $table->column('name', 'TEXT NULL');
+                $table->primaryKey('id');
+            });
+
+        });
+
+        $extender->migrate();    
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_migrate_all_collected_data_tables_and_seeds()
+    {
+        $this->mockedWordpressDabaseInstanceGlobal();
+
+        global $result;
+        global $wpdb;
+
+        $result = array();
+
+        $closure = function($table, $data) {
+            
+            global $result;
+            array_push($result, array(
+                'seed_queries' => array(
+                    'table' => $table, 
+                    'data' => $data
+                )
+            ));
+            
+            return true;
+        };
+
+        $wpdb->shouldReceive('insert')->withArgs($closure);
+
+        include TESTS_DIR . 'Mocks/wp/wp-admin/includes/upgrade.php';
+
+        $extender = new SchemaExtender();
+        $extender->init(function($context) {
+            
+            $context->table('users', function($table) {
+                $table->column('id', 'INT(11) NOT NULL AUTO_INCREMENT');
+                $table->column('name', 'TEXT NULL');
+                $table->primaryKey('id');
+            });
+
+            $context->tableSeed('users', function($data) {
+                $data->id = 1;
+                $data->name = 'John Doe';
+                return $data;
+            })->iterate(2);
+
+            $context->tableSeed('users', function($data) {
+                $data->id = 1;
+                $data->name = 'John Doe';
+                return $data;
+            });
+
+            $context->table('user_options', function($table) {
+                $table->column('id', 'INT(11) NOT NULL AUTO_INCREMENT');
+                $table->column('user_id', 'INT(11) NOT NULL');
+                $table->column('nick_name', 'TEXT NULL');
+            });
+
+            $context->rawQuery('
+                ALTER TABLE ' . $context->tableName('users') . '
+                    ADD KEY `user_id` (`user_id`);
+                ALTER TABLE ' . $context->tableName('users_options') . ' 
+                    ADD CONSTRAINT `foreign_constraint_users_option_users` 
+                    FOREIGN KEY (`user_id`) 
+                    REFERENCES ' . $context->tableName('users') . ' (`id`) 
+                    ON DELETE CASCADE 
+                    ON UPDATE NO ACTION;'
+            );
+
+        });
+
+        $extender->migrate();   
+
+        $this->assertEquals(4, count($result));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_drop_table()
+    {
+        $this->mockedWordpressDabaseInstanceGlobal();
+
+        global $result;
+        global $wpdb;
+
+        $result = '';
+        
+        $closure = function($query) {
+            
+            global $result;
+            $result = $result . $query;
+
+            return true;
+        };
+
+        $wpdb->shouldReceive('query')->withArgs($closure);
+
+        $extender = new SchemaExtender();
+        $extender->init();
+        $extender->dropTable('user');
+        $extender->dropTable('user_options');
+
+        $this->assertEquals(172, strlen($result));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_drop_tables()
+    {
+        $this->mockedWordpressDabaseInstanceGlobal();
+
+        global $result;
+        global $wpdb;
+
+        $result = '';
+        
+        $closure = function($query) {
+            
+            global $result;
+            $result = $result . $query;
+
+            return true;
+        };
+
+        $wpdb->shouldReceive('query')->withArgs($closure);
+
+        $extender = new SchemaExtender();
+        $extender->init();
+        $extender->dropTables(['user', 'user_options']);
+
+        $this->assertEquals(172, strlen($result));
+    }
+
+    public function mockedWordpressDabaseInstanceGlobal()
     {
         global $wpdb;
 
         $wpdb = Mockery::mock('wpdb');
         $wpdb->prefix = 'wp_';
         $wpdb->shouldReceive('get_charset_collate')
-             ->andReturn('UTF-8');
-
-        SchemaExtenderFacade::init();
-        SchemaExtenderFacade::table('users', function($table) {
-            $table->column('id', 'INT(11) NOT NULL AUTO_INCREMENT');
-            $table->column('name', 'TEXT NULL');
-            $table->primaryKey('id');
-        });
-
-        $queries = SchemaExtenderFacade::getQueries();
-
-        $this->assertEquals(105, strlen($queries[0]));
-    }
-
-    public function __ideal_structure__()
-    {
-        SchemaExtender::init(function($schema) {
-            
-            $schema->table('users', function($column) {
-                $column->id = 'INT(11) NOT NULL AUTO_INCREMENT';
-                $column->name = 'TEXT NULL';
-            })->primaryKey('id');
-            
-            $schema->table('users_options', function($column) {
-                $column->id = 'INT(11) NOT NULL AUTO_INCREMENT';
-                $column->name_option = 'TEXT NULL';
-            })->primaryKey('id');
-
-            $schema->table('users_options', [
-                'id' => 'INT(11) NOT NULL AUTO_INCREMENT',
-                'name_option' => 'TEXT NULL',
-            ])->primaryKey('id');
-
-            $schema->raw('
-                ALTER TABLE ' . $schema->tableName('users') . '
-                    ADD KEY `user_id` (`user_id`);
-                ALTER TABLE ' . $schema->tableName('users_options') . ' 
-                    ADD CONSTRAINT `foreign_constraint_users_option_users` 
-                    FOREIGN KEY (`user_id`) 
-                    REFERENCES ' . $schema->tableName('users') . ' (`id`) 
-                    ON DELETE CASCADE 
-                    ON UPDATE NO ACTION;
-            ');
-
-            $schema->seeds('users', function($column) {
-                $column->name = 'John Doe' . rand();
-                return $column;
-            })->repeat(5);
-
-            $schema->seeds('users', [
-                ['field' => 'value'],
-                ['field' => 'valu' ],
-            ]);
-        });
-
-        SchemaExtender::init();
-        SchemaExtender::table('users', function($column) {
-            $column->id = 'INT(11) NOT NULL AUTO_INCREMENT';
-            $column->name = 'TEXT NULL';
-        })->primaryKey('id');
-
-        SchemaExtender::seeds('users', function($column) {
-            $column->name = 'John Doe' . rand();
-            return $column;
-        })->repeat(5);
-
-        SchemaExtender::seeds('users', [
-            ['name' => 'John Doe 1'],
-            ['name' => 'John Doe 2'],
-        ])->repeat(5);
-
-        SchemaExtender::drop(['users']);
-        
-        SchemaExtender::migrate();   
+             ->andReturn('UTF-8');   
     }
 }

@@ -1,4 +1,4 @@
-# WP DB Schema Extender [![Build Status](https://img.shields.io/travis/LordDashMe/wordpress-db-schema-extender/master.svg?style=flat-square)](https://travis-ci.org/LordDashMe/wordpress-db-schema-extender) [![Coverage Status](https://img.shields.io/coveralls/repos/github/LordDashMe/wordpress-db-schema-extender/master.svg?style=flat-square)](https://coveralls.io/github/LordDashMe/wordpress-db-schema-extender?branch=master)
+# WP DB Schema Extender [![Build Status](https://img.shields.io/travis/LordDashMe/wordpress-db-schema-extender/master.svg?style=flat-square)](https://travis-ci.org/LordDashMe/wordpress-db-schema-extender) [![Coverage Status](https://img.shields.io/coveralls/LordDashMe/wordpress-db-schema-extender/master.svg?style=flat-square)](https://coveralls.io/github/LordDashMe/wordpress-db-schema-extender?branch=master)
 
 - A WordPress Database extender that provides a nice structure of table schema and data seeds.
 

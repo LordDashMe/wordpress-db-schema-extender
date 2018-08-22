@@ -1,6 +1,8 @@
-# WP DB Schema Extender [![Latest Stable Version](https://img.shields.io/packagist/v/LordDashMe/wordpress-db-schema-extender.svg?style=flat-square)](https://packagist.org/packages/LordDashMe/wordpress-db-schema-extender) [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.6-8892BF.svg?style=flat-square)](https://php.net/) [![Build Status](https://img.shields.io/travis/LordDashMe/wordpress-db-schema-extender/master.svg?style=flat-square)](https://travis-ci.org/LordDashMe/wordpress-db-schema-extender) [![Coverage Status](https://img.shields.io/coveralls/LordDashMe/wordpress-db-schema-extender/master.svg?style=flat-square)](https://coveralls.io/github/LordDashMe/wordpress-db-schema-extender?branch=master)
+# WP DB Schema Extender
 
-- A WordPress Database extender that provides a nice structure of table schema and data seeds.
+A WordPress Database extender that provides a nice structure of table schema and data seeds.
+
+[![Latest Stable Version](https://img.shields.io/packagist/v/LordDashMe/wordpress-db-schema-extender.svg?style=flat-square)](https://packagist.org/packages/LordDashMe/wordpress-db-schema-extender) [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.6-8892BF.svg?style=flat-square)](https://php.net/) [![Build Status](https://img.shields.io/travis/LordDashMe/wordpress-db-schema-extender/master.svg?style=flat-square)](https://travis-ci.org/LordDashMe/wordpress-db-schema-extender) [![Coverage Status](https://img.shields.io/coveralls/LordDashMe/wordpress-db-schema-extender/master.svg?style=flat-square)](https://coveralls.io/github/LordDashMe/wordpress-db-schema-extender?branch=master)
 
 ## Requirement(s)
 

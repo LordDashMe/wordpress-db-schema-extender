@@ -178,7 +178,7 @@ $schemaExtender->init();
 $schemaExtender->dropTable('users');
 $schemaExtender->dropTable('user_options');
 
-// Or you can use the alis function that support multiple table names in one argument.
+// Or you can use the alias function that support multiple table names in one argument.
 $schemaExtender->dropTables(['users', 'user_options']);
 
 ```

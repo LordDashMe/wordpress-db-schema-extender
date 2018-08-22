@@ -58,7 +58,7 @@ $schemaExtender->init(function($context) {
         $table->primaryKey('id');
     });
     $context->rawQuery('
-        ALTER TABLE ' . $context->tableName('users') . '
+        ALTER TABLE ' . $context->tableName('users_options') . '
             ADD KEY `user_id` (`user_id`);
         ALTER TABLE ' . $context->tableName('users_options') . ' 
             ADD CONSTRAINT `foreign_constraint_users_option_users` 
@@ -115,7 +115,7 @@ SchemaExtender::init(function($context) {
         $table->primaryKey('id');
     });
     $context->rawQuery('
-        ALTER TABLE ' . $context->tableName('users') . '
+        ALTER TABLE ' . $context->tableName('users_options') . '
             ADD KEY `user_id` (`user_id`);
         ALTER TABLE ' . $context->tableName('users_options') . ' 
             ADD CONSTRAINT `foreign_constraint_users_option_users` 

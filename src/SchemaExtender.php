@@ -403,7 +403,7 @@ class SchemaExtender
         $this->setTableName($tableName);
 
         // Make sure to flush the old seed query index
-        // to avoid collision with the new incoming value,
+        // to avoid collision with the new incoming value.
         $this->flushSeedQueryIndex();
 
         if ($callback instanceof \Closure) {

@@ -20,7 +20,7 @@ composer require lorddashme/wordpress-db-schema-extender
 
 - You can start using the package without any configuration needed.
 
-- Available functions:
+- Below are the available functions:
 
 | Function | Description |
 | -------- | ----------- |

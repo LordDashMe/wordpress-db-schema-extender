@@ -274,7 +274,7 @@ class SchemaExtenderUnitTest extends TestCase
         $extender->dropTable('user');
         $extender->dropTable('user_options');
 
-        $this->assertEquals(172, strlen($result));
+        $this->assertEquals(178, strlen($result));
     }
 
     /**
@@ -303,7 +303,7 @@ class SchemaExtenderUnitTest extends TestCase
         $extender->init();
         $extender->dropTables(['user', 'user_options']);
 
-        $this->assertEquals(172, strlen($result));
+        $this->assertEquals(178, strlen($result));
     }
 
     public function mockedWordpressDabaseInstanceGlobal()

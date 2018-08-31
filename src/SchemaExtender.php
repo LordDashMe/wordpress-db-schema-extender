@@ -523,7 +523,7 @@ class SchemaExtender
     public function dropTable($tableName)
     {
         $this->db->query('SET FOREIGN_KEY_CHECKS = 0;');
-        $this->db->query("DROP TABLE IF EXISTS `{$tableName}`;");
+        $this->db->query("DROP TABLE IF EXISTS `{$this->getTableNamePrefix($tableName)}`;");
         $this->db->query('SET FOREIGN_KEY_CHECKS = 1;');  
     }
 

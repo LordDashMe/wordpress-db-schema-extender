@@ -32,8 +32,8 @@ composer require lorddashme/wordpress-db-schema-extender
 | ```tableName('tableName');``` | The return value of this function is concatenated with the wordpress table prefix setup in the config file. |
 | ```rawQuery('statement');``` | Use to provide other sql query statement. Of course not all of the sql query is wrapped to this package that is why this function is provided to still allow you to do anything what you want. |
 | ```migrate();``` | Use to commit all the declared statement. |
-| ```dropTable('tableName');``` | Use to drop the specified table. |
-| ```dropTables(['tableName', ...]);``` | Use to drop tables in a single line of code. |
+| ```dropTable('tableName');``` | Use to drop a single table. |
+| ```dropTables(['tableName', ...]);``` | Use to drop a multiple tables. |
 
 - Below are the sample implementation:
 

@@ -6,7 +6,7 @@ use Mockery as Mockery;
 use PHPUnit\Framework\TestCase;
 use LordDashMe\Wordpress\DB\SchemaExtender;
 
-class SchemaExtenderUnitTest extends TestCase
+class SchemaExtenderTest extends TestCase
 {
     /**
      * @test

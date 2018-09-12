@@ -142,6 +142,8 @@ SchemaExtender::tableSeed('user_options', function($data) {
 
 ```
 
+### Seed Table
+
 - The SchemaExtender class "tableSeed" function is not only for closure type argument, you can use array type if you want.
 
 ```php
@@ -164,6 +166,8 @@ $schemaExtender->tableSeed('user_options', [
 ])->iterate(2);
 
 ```
+
+### Drop Table
 
 - The SchemaExtender class also provide a "dropTable" or "dropTables" function to accomodate the drop table action.
 

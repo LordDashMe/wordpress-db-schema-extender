@@ -144,7 +144,7 @@ SchemaExtender::tableSeed('user_options', function($data) {
 
 ### Seed Table
 
-- The SchemaExtender class "tableSeed" function is not only for closure type argument, you can use array type if you want.
+- The SchemaExtender class "tableSeed" function is not only for closure type in the second argument. Also you can use array type in the second argument.
 
 ```php
 <?php

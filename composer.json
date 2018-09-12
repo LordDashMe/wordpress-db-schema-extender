@@ -1,7 +1,14 @@
 {
     "name": "lorddashme/wordpress-db-schema-extender",
     "description": "A WordPress Database extender that provides a nice structure of table schema and data seeds.",
-    "keywords": ["WordPress", "github", "wp", "wp-db", "schema", "extender"],
+    "keywords": [
+        "WordPress", 
+        "github", 
+        "wp", 
+        "wp-db", 
+        "schema", 
+        "extender"
+    ],
     "type": "library",
     "license": "MIT",
     "homepage": "https://github.com/lorddashme/wp-db-schema-extender",

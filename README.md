@@ -10,7 +10,7 @@ A WordPress Database extender that provides a nice structure of table schema and
 
 ## Install
 
-- It's advice to install the package via Composer. Use the command below to install the package:
+- It is advice to install the package via Composer. Use the command below to install the package:
 
 ```txt
 composer require lorddashme/wordpress-db-schema-extender

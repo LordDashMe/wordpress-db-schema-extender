@@ -53,12 +53,14 @@ $schemaExtender->init(function($context) {
         $table->column('name', 'TEXT NULL');
         $table->primaryKey('id');
     });
+    
     $context->table('user_options', function($table) {
         $table->column('id', 'INT(11) NOT NULL AUTO_INCREMENT');
         $table->column('user_id', 'INT(11) NOT NULL');
         $table->column('nick_name', 'INT(11) NOT NULL');
         $table->primaryKey('id');
     });
+    
     $context->rawQuery('
         ALTER TABLE ' . $context->tableName('users_options') . '
             ADD KEY `user_id` (`user_id`);
@@ -69,6 +71,7 @@ $schemaExtender->init(function($context) {
             ON DELETE CASCADE 
             ON UPDATE NO ACTION;'
     );
+    
     $context->tableSeed('users', function($data) {
         $data->name = 'John Doe';
         return $data;
@@ -110,12 +113,14 @@ SchemaExtender::init(function($context) {
         $table->column('name', 'TEXT NULL');
         $table->primaryKey('id');
     });
+    
     $context->table('user_options', function($table) {
         $table->column('id', 'INT(11) NOT NULL AUTO_INCREMENT');
         $table->column('user_id', 'INT(11) NOT NULL');
         $table->column('nick_name', 'INT(11) NOT NULL');
         $table->primaryKey('id');
     });
+    
     $context->rawQuery('
         ALTER TABLE ' . $context->tableName('users_options') . '
             ADD KEY `user_id` (`user_id`);

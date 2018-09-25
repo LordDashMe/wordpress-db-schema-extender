@@ -97,7 +97,7 @@ register_activation_hook(
 
 ```
 
-- You can also use the SchemaExtender class like static-like class. See the "use" namespace path used.
+- You can also use the SchemaExtender class like static-like class. See the "use" namespace path or imported class used.
 
 ```php
 <?php

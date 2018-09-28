@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9efc2ebef8ab7ec09addcc47916e4cf9",
+    "content-hash": "34fa1e32c13f9cf4221d5d5eb898d419",
     "packages": [
         {
             "name": "lorddashme/php-static-class-interface",
-            "version": "v1.0.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LordDashMe/php-static-class-interface.git",
-                "reference": "41f6881d41fd5f061460ad64fb92439f2a1ca7e8"
+                "reference": "6f3de1372118850c36b7b49cf74b0d623df7e36e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LordDashMe/php-static-class-interface/zipball/41f6881d41fd5f061460ad64fb92439f2a1ca7e8",
-                "reference": "41f6881d41fd5f061460ad64fb92439f2a1ca7e8",
+                "url": "https://api.github.com/repos/LordDashMe/php-static-class-interface/zipball/6f3de1372118850c36b7b49cf74b0d623df7e36e",
+                "reference": "6f3de1372118850c36b7b49cf74b0d623df7e36e",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,7 @@
                 "static",
                 "static-interface"
             ],
-            "time": "2018-08-08T08:38:15+00:00"
+            "time": "2018-09-27T10:55:30+00:00"
         }
     ],
     "packages-dev": [
@@ -1441,16 +1441,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.4.14",
+            "version": "v3.4.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "810af2d35fc72b6cf5c01116806d2b65ccaaf2e2"
+                "reference": "c2f4812ead9f847cb69e90917ca7502e6892d6b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/810af2d35fc72b6cf5c01116806d2b65ccaaf2e2",
-                "reference": "810af2d35fc72b6cf5c01116806d2b65ccaaf2e2",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/c2f4812ead9f847cb69e90917ca7502e6892d6b8",
+                "reference": "c2f4812ead9f847cb69e90917ca7502e6892d6b8",
                 "shasum": ""
             },
             "require": {
@@ -1496,7 +1496,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2018-07-26T11:19:56+00:00"
+            "time": "2018-08-10T07:34:36+00:00"
         },
         {
             "name": "webmozart/assert",

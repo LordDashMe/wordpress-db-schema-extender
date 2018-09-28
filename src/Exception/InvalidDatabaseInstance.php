@@ -11,21 +11,22 @@
 
 namespace LordDashMe\Wordpress\DB\Exception;
 
-use LordDashMe\Wordpress\DB\Exception\Base;
+use LordDashMe\Wordpress\DB\Exception\SchemaExtenderException;
 
 /**
  * Invalid Database Instance Exception Class.
  * 
  * @author Joshua Clifford Reyes <reyesjoshuaclifford@gmail.com>
  */
-class InvalidDatabaseInstance extends Base
+class InvalidDatabaseInstance extends SchemaExtenderException
 {
-    const ERROR_CODE_UNRESOLVED_WP_DB_INSTANCE = 100;
+    const WP_DB_IS_NOT_SET = 1;
 
-    public static function wordpressDatabaseIsNotSet($message = '', $code = null, $previous = null)
-    {
-        $message = 'Cannot resolved wordpress database instance.';
-
-        return new static($message, self::ERROR_CODE_UNRESOLVED_WP_DB_INSTANCE, $previous);
+    public static function wordpressDatabaseIsNotSet(
+        $message = 'Cannot resolved wordpress database instance.', 
+        $code = self::WP_DB_IS_NOT_SET, 
+        $previous = null
+    ) {
+        return new static($message, $code, $previous);
     }
 }

@@ -11,37 +11,49 @@
 
 namespace LordDashMe\Wordpress\DB\Exception;
 
-use LordDashMe\Wordpress\DB\Exception\Base;
+use LordDashMe\Wordpress\DB\Exception\SchemaExtenderException;
 
 /**
  * Invalid Argument Passed Exception Class.
  * 
  * @author Joshua Clifford Reyes <reyesjoshuaclifford@gmail.com>
  */
-class InvalidArgumentPassed extends Base
+class InvalidArgumentPassed extends SchemaExtenderException
 {
-    const ERROR_CODE_UNRESOLVED_ARG_CLOSURE = 100;
-    const ERROR_CODE_UNRESOLVED_ARG_ARRAY_CLOSURE = 101;
-    const ERROR_CODE_UNRESOLVED_ARG_STRING = 102;
+    const IS_NOT_CLOSURE = 1;
+    const IS_NOT_ARRAY_OR_CLOSURE = 2;
+    const IS_NOT_STRING = 3;
+    const IS_NOT_NUMERIC = 4;
 
-    public static function isNotClosure($message = '', $code = null, $previous = null)
-    {
-        $message = 'The given argument is not a closure type.';
-
-        return new static($message, self::ERROR_CODE_UNRESOLVED_ARG_CLOSURE, $previous);
+    public static function isNotClosure(
+        $message = 'The given argument is not a closure type.', 
+        $code = self::IS_NOT_CLOSURE, 
+        $previous = null
+    ) {
+        return new static($message, $code, $previous);
     }
 
-    public static function isNotArrayOrClosure($message = '', $code = null, $previous = null)
-    {
-        $message = 'The given argument not match the required type array or closure.';
-
-        return new static($message, self::ERROR_CODE_UNRESOLVED_ARG_ARRAY_CLOSURE, $previous);
+    public static function isNotArrayOrClosure(
+        $message = 'The given argument not match the required type array or closure.', 
+        $code = self::IS_NOT_ARRAY_OR_CLOSURE, 
+        $previous = null
+    ) {
+        return new static($message, $code, $previous);
     }
 
-    public static function isNotString($message = '', $code = null, $previous = null)
-    {
-        $message = 'The given argument is not a string type.';
+    public static function isNotString(
+        $message = 'The given argument is not a string type.', 
+        $code = self::IS_NOT_STRING, 
+        $previous = null
+    ) {
+        return new static($message, $code, $previous);
+    }
 
-        return new static($message, self::ERROR_CODE_UNRESOLVED_ARG_STRING, $previous);
+    public static function isNotNumeric(
+        $message = 'The given argument is not a numeric type.', 
+        $code = self::IS_NOT_NUMERIC, 
+        $previous = null
+    ) {
+        return new static($message, $code, $previous);
     }
 }

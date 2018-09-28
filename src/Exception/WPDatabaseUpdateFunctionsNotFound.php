@@ -11,21 +11,22 @@
 
 namespace LordDashMe\Wordpress\DB\Exception;
 
-use LordDashMe\Wordpress\DB\Exception\Base;
+use LordDashMe\Wordpress\DB\Exception\SchemaExtenderException;
 
 /**
  * WP Database Update Functions Not Found Exception Class.
  * 
  * @author Joshua Clifford Reyes <reyesjoshuaclifford@gmail.com>
  */
-class WPDatabaseUpdateFunctionsNotFound extends Base
+class WPDatabaseUpdateFunctionsNotFound extends SchemaExtenderException
 {
-    const ERROR_CODE_UNRESOLVED_DB_DELTA_FUNC = 100;
+    const DB_DELTA_IS_NOT_EXIST = 1;
 
-    public static function dbDeltaIsNotExist($message = '', $code = null, $previous = null)
-    {
-        $message = 'The wordpress "dbDelta" function is not exist. Make sure to require the file path "wp-admin/includes/upgrade.php" before the Schema Extender class.';
-
-        return new static($message, self::ERROR_CODE_UNRESOLVED_DB_DELTA_FUNC, $previous);
+    public static function dbDeltaIsNotExist(
+        $message = 'The wordpress "dbDelta" function is not exist. Make sure to require the file path "wp-admin/includes/upgrade.php" before the Schema Extender class.', 
+        $code = self::DB_DELTA_IS_NOT_EXIST, 
+        $previous = null
+    ) {
+        return new static($message, $code, $previous);
     }
 }

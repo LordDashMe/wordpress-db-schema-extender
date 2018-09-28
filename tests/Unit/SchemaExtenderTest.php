@@ -18,11 +18,13 @@ class SchemaExtenderTest extends TestCase
 
     /**
      * @test
-     * @expectedException LordDashMe\Wordpress\DB\Exception\InvalidDatabaseInstance
-     * @expectedExceptionCode 100
      */
-    public function it_should_throw_exception_when_wpdb_not_detected()
-    {   
+    public function it_should_throw_exception_invalid_database_instance_when_the_wpdb_is_not_set()
+    {
+        $this->expectException(\LordDashMe\Wordpress\DB\Exception\InvalidDatabaseInstance::class);
+        $this->expectExceptionCode(1);
+        $this->expectExceptionMessage('Cannot resolved wordpress database instance.');
+
         global $wpdb;
 
         $wpdb = null;
@@ -33,11 +35,13 @@ class SchemaExtenderTest extends TestCase
 
     /**
      * @test
-     * @expectedException LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed
-     * @expectedExceptionCode 100
      */
-    public function it_should_throw_exception_in_create_table_schema_when_second_args_not_closure()
+    public function it_should_throw_exception_invalid_arugment_passed_when_the_create_table_schema_second_arg_is_not_closure()
     {
+        $this->expectException(\LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed::class);
+        $this->expectExceptionCode(1);
+        $this->expectExceptionMessage('The given argument is not a closure type.');
+
         $this->mockedWordpressDabaseInstanceGlobal();
         
         $extender = new SchemaExtender();
@@ -71,17 +75,42 @@ class SchemaExtenderTest extends TestCase
 
     /**
      * @test
-     * @expectedException LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed
-     * @expectedExceptionCode 101
      */
-    public function it_should_throw_exception_in_table_seed_when_second_args_not_array_or_closure()
+    public function it_should_throw_exception_invalid_argument_passed_when_the_table_seed_second_arg_value_is_not_array_or_closure()
     {
+        $this->expectException(\LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed::class);
+        $this->expectExceptionCode(2);
+        $this->expectExceptionMessage('The given argument not match the required type array or closure.');
+
         $this->mockedWordpressDabaseInstanceGlobal();
 
         $extender = new SchemaExtender();
         $extender->init(function($context) {
 
             $context->tableSeed('users', null);
+
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_throw_exception_invalid_argument_passed_when_the_iterate_value_is_not_numeric()
+    {
+        $this->expectException(\LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed::class);
+        $this->expectExceptionCode(4);
+        $this->expectExceptionMessage('The given argument is not a numeric type.');
+
+        $this->mockedWordpressDabaseInstanceGlobal();
+
+        $extender = new SchemaExtender();
+        $extender->init(function($context) {
+
+            $context->tableSeed('users', function($data) {
+                $data->id = 1;
+                $data->name = 'John Doe';
+                return $data;
+            })->iterate(null);
 
         });
     }
@@ -109,11 +138,13 @@ class SchemaExtenderTest extends TestCase
 
     /**
      * @test
-     * @expectedException LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed
-     * @expectedExceptionCode 102 
      */
-    public function it_should_throw_exception_in_raw_query_when_given_args_not_string()
+    public function it_should_throw_exception_invalid_argument_passed_when_the_raw_query_given_args_is_not_string()
     {
+        $this->expectException(\LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed::class);
+        $this->expectExceptionCode(3);
+        $this->expectExceptionMessage('The given argument is not a string type.');
+
         $this->mockedWordpressDabaseInstanceGlobal();
 
         $extender = new SchemaExtender();
@@ -152,11 +183,13 @@ class SchemaExtenderTest extends TestCase
 
     /**
      * @test
-     * @expectedException LordDashMe\Wordpress\DB\Exception\WPDatabaseUpdateFunctionsNotFound
-     * @expectedExceptionCode 100 
      */
-    public function it_should_throw_exception_in_migrate_when_wp_database_update_function_not_exists()
+    public function it_should_throw_exception_wp_database_update_function_not_found_when_wp_database_update_function_is_not_exist()
     {
+        $this->expectException(\LordDashMe\Wordpress\DB\Exception\WPDatabaseUpdateFunctionsNotFound::class);
+        $this->expectExceptionCode(1);
+        $this->expectExceptionMessage('The wordpress "dbDelta" function is not exist. Make sure to require the file path "wp-admin/includes/upgrade.php" before the Schema Extender class.');
+
         $this->mockedWordpressDabaseInstanceGlobal();
 
         $extender = new SchemaExtender();

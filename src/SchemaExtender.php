@@ -11,9 +11,9 @@
 
 namespace LordDashMe\Wordpress\DB;
 
-use LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed;
-use LordDashMe\Wordpress\DB\Exception\InvalidDatabaseInstance;
-use LordDashMe\Wordpress\DB\Exception\WPDatabaseUpdateFunctionsNotFound;
+use LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed as InvalidArgumentPassedException;
+use LordDashMe\Wordpress\DB\Exception\InvalidDatabaseInstance as InvalidDatabaseInstanceException;
+use LordDashMe\Wordpress\DB\Exception\WPDatabaseUpdateFunctionsNotFound as WPDatabaseUpdateFunctionsNotFoundException;
 
 /**
  * Schema Extender Class.
@@ -295,6 +295,8 @@ class SchemaExtender
     /**
      * Tightly coupled to the wordpress database instance.
      * 
+     * @throws LordDashMe\Wordpress\DB\Exception\InvalidDatabaseInstance
+     *  
      * @return void
      */
     protected function getWordpressDatabaseInstance()
@@ -302,7 +304,7 @@ class SchemaExtender
         global $wpdb;
 
         if ((! \class_exists('wpdb')) || (! $wpdb) || (! $wpdb instanceof \wpdb)) {
-            throw InvalidDatabaseInstance::wordpressDatabaseIsNotSet();
+            throw InvalidDatabaseInstanceException::wordpressDatabaseIsNotSet();
         }
 
         $this->db = $wpdb;
@@ -321,7 +323,7 @@ class SchemaExtender
     public function table($name, $callback = null)
     {   
         if (! $callback instanceof \Closure) {
-            throw InvalidArgumentPassed::isNotClosure();
+            throw InvalidArgumentPassedException::isNotClosure();
         }
 
         $this->setTableName($name);
@@ -397,7 +399,7 @@ class SchemaExtender
     public function tableSeed($tableName, $callback)
     {
         if (! is_array($callback) && ! ($callback instanceof \Closure)) {
-            throw InvalidArgumentPassed::isNotArrayOrClosure();    
+            throw InvalidArgumentPassedException::isNotArrayOrClosure();    
         }
 
         $this->setTableName($tableName);
@@ -412,13 +414,11 @@ class SchemaExtender
         }
 
         $seeds = array();
-
         foreach ($callback as $column => $value) {
             $seeds[$column] = $value;
         }
 
         $this->setSeedQueryIndex($this->totalSeedQueries());
-
         $this->setSeedQuery('table', $this->getTableNamePrefix($this->getTableName()));
         $this->setSeedQuery('record', $seeds);
 
@@ -430,11 +430,17 @@ class SchemaExtender
      * 
      * @param  int  $counter    Total number of repetition for the given record.
      * 
+     * @throws LordDashMe\Wordpress\DB\Exception\InvalidArgumentPassed
+     * 
      * @return void
      */
     public function iterate($counter)
     {
-        $this->setSeedQuery('iterate', $counter);
+        if (! \is_numeric($counter)) {
+            throw InvalidArgumentPassedException::isNotNumeric();
+        }
+
+        $this->setSeedQuery('iterate', \round($counter));
     }
 
     /**
@@ -449,7 +455,7 @@ class SchemaExtender
     public function rawQuery($query = '')
     {
         if (! \is_string($query)) {
-            throw InvalidArgumentPassed::isNotString();
+            throw InvalidArgumentPassedException::isNotString();
         }
 
         $total = $this->totalQueries();
@@ -479,7 +485,7 @@ class SchemaExtender
     protected function processQueries()
     {
         if (! \function_exists('dbDelta')) {
-            throw WPDatabaseUpdateFunctionsNotFound::dbDeltaIsNotExist();   
+            throw WPDatabaseUpdateFunctionsNotFoundException::dbDeltaIsNotExist();   
         }
 
         $queries = '';

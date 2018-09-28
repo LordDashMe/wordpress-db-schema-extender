@@ -14,8 +14,8 @@ namespace LordDashMe\Wordpress\DB\Exception;
 use Exception;
 
 /**
- * Base Class Exception.
+ * Schema Extender Class Exception.
  * 
  * @author Joshua Clifford Reyes <reyesjoshuaclifford@gmail.com>
  */
-class Base extends Exception {}
+class SchemaExtenderException extends Exception {}

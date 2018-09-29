@@ -87,7 +87,7 @@ $schemaExtender->tableSeed('user_options', function($data) {
 
 // You can attach the "migrate" function to "register_activation_hook" of wordpress.
 // When the wordpress plugin set to active you can add the extender "migrate" function
-// to execute all the query stored before the activation.
+// to execute all the query stored before the activation begin.
 register_activation_hook( 
     '<wordpress>/wp-content/plugins/<your-plugin-name>/<your-plugin-name>.php', 
     function () use ($schemaExtender) {
